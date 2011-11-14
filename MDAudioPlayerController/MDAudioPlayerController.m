@@ -389,20 +389,19 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   selectedIndex = newIndex;
   
   NSError *error = nil;
-  AVAudioPlayer *newAudioPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:[(MDAudioFile *)[soundFiles objectAtIndex:selectedIndex] filePath] error:&error];
+  AudioStreamer *streamer = [[AudioStreamer alloc] initWithURL:[(MDAudio *)[soundFiles objectAtIndex:selectedIndex] url]];
   
   if (error)
     NSLog(@"%@", error);
-  
-  //  [player stop];
-  //  self.player = newAudioPlayer;
-  //  [newAudioPlayer release];
-  
-  //  player.delegate = self;
+
   //  player.volume = volumeSlider.value;
-  //  [player prepareToPlay];
   //  [player setNumberOfLoops:0];
-  //  [player play];
+
+  [audioStreamer stop];
+  self.audioStreamer = streamer;
+  [streamer release];
+  
+  [self.audioStreamer start];
   
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];	
@@ -434,21 +433,17 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   selectedIndex = newIndex;
   
   NSError *error = nil;
-  AVAudioPlayer *newAudioPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:[(MDAudioFile *)[soundFiles objectAtIndex:selectedIndex] filePath] error:&error];
+  AudioStreamer *streamer = [[AudioStreamer alloc] initWithURL:[(MDAudio *)[soundFiles objectAtIndex:selectedIndex] url]];
   
   if (error)
     NSLog(@"%@", error);
+
+  [audioStreamer stop];
+  self.audioStreamer = streamer;
+  [streamer release];
   
-  //  [player stop];
-  //  self.player = newAudioPlayer;
-  //  [newAudioPlayer release];
-  //  
-  //  player.delegate = self;
-  //  player.volume = volumeSlider.value;
-  //  [player prepareToPlay];
-  //  [player setNumberOfLoops:0];
-  //  [player play];
-  //  
+  [self.audioStreamer start];
+
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];
 }
@@ -781,16 +776,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [streamer release];
 
   [self.audioStreamer start];
-  //  [player stop];
-  //  self.player = newAudioPlayer;
-  //  [newAudioPlayer release];
-  //  
-  //  player.delegate = self;
-  //  player.volume = volumeSlider.value;
-  //  [player prepareToPlay];
-  //  [player setNumberOfLoops:0];
-  //  [player play];
-  //  
+
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];
 }
