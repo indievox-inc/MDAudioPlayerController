@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "AudioStreamer.h"
 
 @interface MDAudioPlayerController : UIViewController <AVAudioPlayerDelegate, UITableViewDelegate, UITableViewDataSource>
 {
 	NSMutableArray		*soundFiles;
-	NSString			*soundFilesPath;
 	NSUInteger			selectedIndex;
 	
-	AVAudioPlayer		*player;
+    AudioStreamer       *audioStreamer;
 	
 	CAGradientLayer		*gradientLayer;
 	
@@ -54,7 +54,7 @@
 @property (nonatomic, retain) NSMutableArray *soundFiles;
 @property (nonatomic, copy) NSString *soundFilesPath;
 
-@property (nonatomic, retain) AVAudioPlayer *player;
+@property (nonatomic, retain) AudioStreamer *audioStreamer;
 
 @property (nonatomic, retain) CAGradientLayer *gradientLayer;
 
@@ -90,7 +90,7 @@
 @property (nonatomic, assign) BOOL repeatOne;
 @property (nonatomic, assign) BOOL shuffle;
 
-- (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs atPath:(NSString *)path andSelectedIndex:(int)index;
+- (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs andSelectedIndex:(int)index;
 - (void)dismissAudioPlayer;
 - (void)showSongFiles;
 - (void)showOverlayView;

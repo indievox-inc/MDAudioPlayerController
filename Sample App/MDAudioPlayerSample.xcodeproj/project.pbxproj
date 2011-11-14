@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C9DD2631470C1B000BADA15 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9DD2621470C1B000BADA15 /* MediaPlayer.framework */; };
+		1C9DD2651470C1C300BADA15 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9DD2641470C1C300BADA15 /* CFNetwork.framework */; };
+		1C9DD2681470C26D00BADA15 /* MDAudioPlayerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9DD2671470C26D00BADA15 /* MDAudioPlayerTableViewCell.m */; };
+		1C9DD2751470D32C00BADA15 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9DD2741470D32C00BADA15 /* AudioStreamer.m */; };
+		1C9DD27C1470FA3700BADA15 /* MDAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9DD27B1470FA3700BADA15 /* MDAudio.m */; };
 		1D3623260D0F684500981E51 /* MDAudioPlayerSampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* MDAudioPlayerSampleAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -43,6 +48,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C9DD2621470C1B000BADA15 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		1C9DD2641470C1C300BADA15 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		1C9DD2661470C26D00BADA15 /* MDAudioPlayerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDAudioPlayerTableViewCell.h; sourceTree = "<group>"; };
+		1C9DD2671470C26D00BADA15 /* MDAudioPlayerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDAudioPlayerTableViewCell.m; sourceTree = "<group>"; };
+		1C9DD2731470D32C00BADA15 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioStreamer.h; path = ../Dependencies/AudioStreamer/Classes/AudioStreamer.h; sourceTree = "<group>"; };
+		1C9DD2741470D32C00BADA15 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AudioStreamer.m; path = ../Dependencies/AudioStreamer/Classes/AudioStreamer.m; sourceTree = "<group>"; };
+		1C9DD27A1470FA3700BADA15 /* MDAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDAudio.h; sourceTree = "<group>"; };
+		1C9DD27B1470FA3700BADA15 /* MDAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDAudio.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* MDAudioPlayerSampleAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDAudioPlayerSampleAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* MDAudioPlayerSampleAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDAudioPlayerSampleAppDelegate.m; sourceTree = "<group>"; };
@@ -90,6 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C9DD2651470C1C300BADA15 /* CFNetwork.framework in Frameworks */,
+				1C9DD2631470C1B000BADA15 /* MediaPlayer.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				C99ACCD51208AE54004ED7EE /* AudioToolbox.framework in Frameworks */,
@@ -121,6 +136,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1C9DD25A1470BFEC00BADA15 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				1C9DD2721470D31E00BADA15 /* AudioStreamer */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		1C9DD2721470D31E00BADA15 /* AudioStreamer */ = {
+			isa = PBXGroup;
+			children = (
+				1C9DD2731470D32C00BADA15 /* AudioStreamer.h */,
+				1C9DD2741470D32C00BADA15 /* AudioStreamer.m */,
+			);
+			name = AudioStreamer;
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
@@ -128,6 +160,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				1C9DD25A1470BFEC00BADA15 /* Dependencies */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -137,6 +170,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				C99ACE1A1208B34C004ED7EE /* Images */,
 				28A0AAE50D9B0CCF005BE974 /* MDAudioPlayerSample_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -159,9 +193,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C9DD2621470C1B000BADA15 /* MediaPlayer.framework */,
+				C99ACCD41208AE54004ED7EE /* AudioToolbox.framework */,
+				1C9DD2641470C1C300BADA15 /* CFNetwork.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				C99ACCD41208AE54004ED7EE /* AudioToolbox.framework */,
 				C99ACCD61208AE54004ED7EE /* AVFoundation.framework */,
 				C99ACD521208AE80004ED7EE /* QuartzCore.framework */,
 				C99ACD6C1208AE8C004ED7EE /* CoreGraphics.framework */,
@@ -172,9 +208,12 @@
 		C99ACE191208B34C004ED7EE /* MDAudioPlayerController */ = {
 			isa = PBXGroup;
 			children = (
-				C99ACE1A1208B34C004ED7EE /* Images */,
+				1C9DD27A1470FA3700BADA15 /* MDAudio.h */,
+				1C9DD27B1470FA3700BADA15 /* MDAudio.m */,
 				C99ACE2C1208B34C004ED7EE /* MDAudioFile.h */,
 				C99ACE2D1208B34C004ED7EE /* MDAudioFile.m */,
+				1C9DD2661470C26D00BADA15 /* MDAudioPlayerTableViewCell.h */,
+				1C9DD2671470C26D00BADA15 /* MDAudioPlayerTableViewCell.m */,
 				C99ACE2E1208B34C004ED7EE /* MDAudioPlayerController.h */,
 				C99ACE2F1208B34C004ED7EE /* MDAudioPlayerController.m */,
 			);
@@ -203,7 +242,8 @@
 				C9A1795C1208B5FE000E7E81 /* AudioPlayerTableBackground.png */,
 				C99ACE2B1208B34C004ED7EE /* AudioPlayerVolumeKnob.png */,
 			);
-			path = Images;
+			name = Images;
+			path = ../MDAudioPlayerController/Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,6 +333,9 @@
 				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
 				C99ACE411208B34C004ED7EE /* MDAudioFile.m in Sources */,
 				C99ACE421208B34C004ED7EE /* MDAudioPlayerController.m in Sources */,
+				1C9DD2681470C26D00BADA15 /* MDAudioPlayerTableViewCell.m in Sources */,
+				1C9DD2751470D32C00BADA15 /* AudioStreamer.m in Sources */,
+				1C9DD27C1470FA3700BADA15 /* MDAudio.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +377,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PREBINDING = NO;
 				SDKROOT = iphoneos4.1;
 			};
@@ -347,6 +391,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos4.1;
