@@ -81,14 +81,14 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
      addObserver:self
      selector:@selector(playbackStateChanged:)
      name:ASStatusChangedNotification
-     object:audioStreamer];
+     object:self.audioStreamer];
     
 #ifdef SHOUTCAST_METADATA
 	[[NSNotificationCenter defaultCenter]
 	 addObserver:self
 	 selector:@selector(metadataChanged:)
 	 name:ASUpdateMetadataNotification
-	 object:audioStreamer];
+	 object:self.audioStreamer];
 #endif
     
     
@@ -180,19 +180,12 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   previousButton.enabled = [self canGoToPreviousTrack];
 }
 
--(void)updateViewForPlayerInfo:(AVAudioPlayer*)p {
-  duration.text = [NSString stringWithFormat:@"%d:%02d", (int)p.duration / 60, (int)p.duration % 60, nil];
-  indexLabel.text = [NSString stringWithFormat:@"%d of %d", (selectedIndex + 1), [soundFiles count]];
-  progressSlider.maximumValue = p.duration;
-  if ([[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"])
-    volumeSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"];
-  else
-    volumeSlider.value = p.volume;
-}
-
 - (void)updateViewForStreamerInfo:(AudioStreamer *)streamer {
   duration.text = [NSString stringWithFormat:@"%d:%02d", (int)streamer.progress / 60, (int)streamer.progress % 60, nil];
+  indexLabel.text = [NSString stringWithFormat:@"%d of %d", (selectedIndex + 1), [soundFiles count]];
   progressSlider.maximumValue = streamer.duration;
+  
+  [self updateCurrentTime];
   
   if ([[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"])
     volumeSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"];
@@ -200,7 +193,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)dismissAudioPlayer {
   [audioStreamer stop];
+  [self.navigationController setNavigationBarHidden:NO];
   [self.parentViewController dismissModalViewControllerAnimated:YES];
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)showSongFiles {
@@ -355,16 +350,14 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self updateViewForStreamerState:self.audioStreamer];
 }
 
-- (BOOL)canGoToNextTrack
-{
+- (BOOL)canGoToNextTrack {
   if (selectedIndex + 1 == [self.soundFiles count]) 
     return NO;
   else
     return YES;
 }
 
-- (BOOL)canGoToPreviousTrack
-{
+- (BOOL)canGoToPreviousTrack {
   if (selectedIndex == 0)
     return NO;
   else
@@ -393,13 +386,26 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   if (error)
     NSLog(@"%@", error);
-
+  
   //  player.volume = volumeSlider.value;
   //  [player setNumberOfLoops:0];
-
+  
   [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(playbackStateChanged:)
+   name:ASStatusChangedNotification
+   object:self.audioStreamer];
+  
+#ifdef SHOUTCAST_METADATA
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(metadataChanged:)
+   name:ASUpdateMetadataNotification
+   object:self.audioStreamer];
+#endif
   
   [self.audioStreamer start];
   
@@ -437,13 +443,26 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   if (error)
     NSLog(@"%@", error);
-
+  
   [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(playbackStateChanged:)
+   name:ASStatusChangedNotification
+   object:self.audioStreamer];
+  
+#ifdef SHOUTCAST_METADATA
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(metadataChanged:)
+   name:ASUpdateMetadataNotification
+   object:self.audioStreamer];
+#endif
   
   [self.audioStreamer start];
-
+  
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];
 }
@@ -470,57 +489,10 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 }
 
 #pragma mark -
-#pragma mark AVAudioPlayer delegate
-
-
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)p successfully:(BOOL)flag {
-  if (flag == NO)
-    NSLog(@"Playback finished unsuccessfully");
-  
-  //  if ([self canGoToNextTrack])
-  //    [self next];
-  //  else if (interrupted)
-  //    [self.player play];
-  //  else
-  //    [self.player stop];
-  //  
-  [self updateViewForStreamerInfo:self.audioStreamer];
-  [self updateViewForStreamerState:self.audioStreamer];
-}
-
-- (void)playerDecodeErrorDidOccur:(AVAudioPlayer *)p error:(NSError *)error {
-  NSLog(@"ERROR IN DECODE: %@\n", error);
-  
-  UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Decode Error" 
-                                                      message:[NSString stringWithFormat:@"Unable to decode audio file with error: %@", [error localizedDescription]] 
-                                                     delegate:self 
-                                            cancelButtonTitle:@"OK" 
-                                            otherButtonTitles:nil];
-  [alertView show];
-  [alertView release];
-}
-
-- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player {
-  // perform any interruption handling here
-  printf("(apbi) Interruption Detected\n");
-  //  [[NSUserDefaults standardUserDefaults] setFloat:[self.player currentTime] forKey:@"Interruption"];
-}
-
-- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player {
-  // resume playback at the end of the interruption
-  printf("(apei) Interruption ended\n");
-
-  [audioStreamer start];
-  
-  // remove the interruption key. it won't be needed
-  [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"Interruption"];
-}
-
-#pragma mark -
 #pragma mark UIViewController
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
+- (void)loadView {
+  [super loadView];
   
   self.view.backgroundColor = [UIColor blackColor];
   
@@ -560,10 +532,10 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
   AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);	
   
-  MDAudioFile *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
+  MDAudio *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
   
   self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 14, 195, 12)];
-  //  titleLabel.text = [selectedSong title];
+  titleLabel.text = [selectedSong title];
   titleLabel.font = [UIFont boldSystemFontOfSize:12];
   titleLabel.backgroundColor = [UIColor clearColor];
   titleLabel.textColor = [UIColor whiteColor];
@@ -574,7 +546,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:titleLabel];
   
   self.artistLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 2, 195, 12)];
-  //  artistLabel.text = [selectedSong artist];
+  artistLabel.text = [selectedSong artist];
   artistLabel.font = [UIFont boldSystemFontOfSize:12];
   artistLabel.backgroundColor = [UIColor clearColor];
   artistLabel.textColor = [UIColor lightGrayColor];
@@ -585,7 +557,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:artistLabel];
   
   self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 27, 195, 12)];
-  //  albumLabel.text = [selectedSong album];
+  albumLabel.text = [selectedSong album];
   albumLabel.backgroundColor = [UIColor clearColor];
   albumLabel.font = [UIFont boldSystemFontOfSize:12];
   albumLabel.textColor = [UIColor lightGrayColor];
@@ -694,6 +666,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -765,18 +738,18 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   cell.isSelectedIndex = YES;
   
   NSError *error = nil;
-
+  
   AudioStreamer *streamer = [[AudioStreamer alloc] initWithURL:[(MDAudio *)[soundFiles objectAtIndex:selectedIndex] url]];
   
   if (error)
     NSLog(@"%@", error);
-
+  
   [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
-
+  
   [self.audioStreamer start];
-
+  
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];
 }
