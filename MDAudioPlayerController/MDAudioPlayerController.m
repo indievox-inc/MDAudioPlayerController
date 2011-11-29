@@ -21,10 +21,8 @@ static const CGFloat kDefaultReflectionFraction = 0.65;
 static const CGFloat kDefaultReflectionOpacity = 0.40;
 
 @synthesize soundFiles;
-
 @synthesize audioStreamer;
 @synthesize gradientLayer;
-
 @synthesize playButton;
 @synthesize pauseButton;
 @synthesize nextButton;
@@ -32,30 +30,24 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 @synthesize toggleButton;
 @synthesize repeatButton;
 @synthesize shuffleButton;
-
 @synthesize currentTime;
 @synthesize duration;
 @synthesize indexLabel;
 @synthesize titleLabel;
 @synthesize artistLabel;
 @synthesize albumLabel;
-
-@synthesize volumeSlider;
 @synthesize progressSlider;
-
 @synthesize songTableView;
-
 @synthesize artworkView;
 @synthesize reflectionView;
 @synthesize containerView;
 @synthesize overlayView;
-
 @synthesize updateTimer;
-
 @synthesize interrupted;
 @synthesize repeatAll;
 @synthesize repeatOne;
 @synthesize shuffle;
+@synthesize volumeView;
 
 - (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs andSelectedIndex:(int)index {
   if (self = [super init])  {
@@ -91,7 +83,7 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 	 object:self.audioStreamer];
 #endif
     
-    
+    volumeView = [[MPVolumeView alloc] init];
     
     [self updateViewForStreamerInfo:audioStreamer];
     [self updateViewForStreamerState:audioStreamer];
@@ -127,6 +119,7 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
   [containerView release], containerView = nil;
   [overlayView release], overlayView = nil;
   [updateTimer invalidate], updateTimer = nil;
+  [volumeView release], volumeView = nil;
   [super dealloc];
 }
 
@@ -304,10 +297,13 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [UIView setAnimationDuration:0.4];
   [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
   
-  if ([overlayView superview])
+  if ([overlayView superview]) {
     [overlayView removeFromSuperview];
-  else
+    [volumeView removeFromSuperview];
+  } else {
     [containerView addSubview:overlayView];
+    [self.view addSubview:volumeView];
+  }
   
   [UIView commitAnimations];
 }
@@ -578,7 +574,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:containerView];
   
   self.artworkView = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
-  //  [artworkView setImage:[selectedSong coverImage] forState:UIControlStateNormal];
+  [artworkView setImage:[selectedSong coverImage] forState:UIControlStateNormal];
   [artworkView addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
   artworkView.showsTouchWhenHighlighted = NO;
   artworkView.adjustsImageWhenHighlighted = NO;
@@ -643,23 +639,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   previousButton.showsTouchWhenHighlighted = YES;
   previousButton.enabled = [self canGoToPreviousTrack];
   [self.view addSubview:previousButton];
-  
-  self.volumeSlider = [[UISlider alloc] initWithFrame:CGRectMake(25, 420, 270, 9)];
-  [volumeSlider setThumbImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerVolumeKnob" ofType:@"png"]]
-                     forState:UIControlStateNormal];
-  [volumeSlider setMinimumTrackImage:[[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerScrubberLeft" ofType:@"png"]] stretchableImageWithLeftCapWidth:5 topCapHeight:3]
-                            forState:UIControlStateNormal];
-  [volumeSlider setMaximumTrackImage:[[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerScrubberRight" ofType:@"png"]] stretchableImageWithLeftCapWidth:5 topCapHeight:3]
-                            forState:UIControlStateNormal];
-  [volumeSlider addTarget:self action:@selector(volumeSliderMoved:) forControlEvents:UIControlEventValueChanged];
-  
-  if ([[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"])
-    volumeSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"];
-  else
-    //    volumeSlider.value = player.volume;
     
-    [self.view addSubview:volumeSlider];
-  
+  volumeView.frame = CGRectMake(0, 0, 270, 20);
+  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420);
+  [volumeView sizeToFit];
+    
   [self updateViewForStreamerInfo:audioStreamer];
   [self updateViewForStreamerState:audioStreamer];
 }

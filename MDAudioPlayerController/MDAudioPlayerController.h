@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MPVolumeView.h>
 #import <QuartzCore/QuartzCore.h>
 #import "AudioStreamer.h"
 
@@ -73,7 +74,7 @@
 @property (nonatomic, retain) UILabel *artistLabel;
 @property (nonatomic, retain) UILabel *albumLabel;
 
-@property (nonatomic, retain) UISlider *volumeSlider;
+@property (nonatomic, retain) MPVolumeView *volumeView;
 @property (nonatomic, retain) UISlider *progressSlider;
 
 @property (nonatomic, retain) UITableView *songTableView;
