@@ -13,6 +13,8 @@
 
 @interface MDAudioPlayerController ()
 - (UIImage *)reflectedImage:(UIButton *)fromImage withHeight:(NSUInteger)height;
+- (void)updateViewForStreamerInfo:(AudioStreamer *)streamer;
+- (void)updateViewForStreamerState:(AudioStreamer *)streamer;
 @end
 
 @implementation MDAudioPlayerController
@@ -186,7 +188,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)dismissAudioPlayer {
   [audioStreamer stop];
-  [self.navigationController setNavigationBarHidden:NO];
   [self.parentViewController dismissModalViewControllerAnimated:YES];
   [self.navigationController popViewControllerAnimated:YES];
 }
@@ -496,32 +497,16 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   updateTimer = nil;
   
-  UINavigationBar *navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-  navigationBar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-  navigationBar.barStyle = UIBarStyleBlackOpaque;
-  [self.view addSubview:navigationBar];
-  
-  UINavigationItem *navItem = [[UINavigationItem alloc] initWithTitle:@""];
-  [navigationBar pushNavigationItem:navItem animated:NO];
-  
-  UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissAudioPlayer)];
-  
+
   self.toggleButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
   [toggleButton setImage:[UIImage imageNamed:@"AudioPlayerAlbumInfo.png"] forState:UIControlStateNormal];
   [toggleButton addTarget:self action:@selector(showSongFiles) forControlEvents:UIControlEventTouchUpInside];
   
   UIBarButtonItem *songsListBarButton = [[UIBarButtonItem alloc] initWithCustomView:toggleButton];
-  
-  navItem.leftBarButtonItem = doneButton;
-  [doneButton release];
-  doneButton = nil;
-  
-  navItem.rightBarButtonItem = songsListBarButton;
+
+  self.navigationItem.rightBarButtonItem = songsListBarButton;
   [songsListBarButton release];
   songsListBarButton = nil;
-  
-  [navItem release];
-  navItem = nil;
   
   AudioSessionInitialize(NULL, NULL, interruptionListenerCallback, self);
   AudioSessionSetActive(true);
@@ -529,8 +514,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);	
   
   MDAudio *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
-  
-  self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 14, 195, 12)];
+
+  UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width, self.navigationController.navigationBar.bounds.size.height)];
+
+  CGFloat positionHeight = 2.f;
+  self.titleLabel = [[UILabel alloc] init];
   titleLabel.text = [selectedSong title];
   titleLabel.font = [UIFont boldSystemFontOfSize:12];
   titleLabel.backgroundColor = [UIColor clearColor];
@@ -539,9 +527,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   titleLabel.shadowOffset = CGSizeMake(0, -1);
   titleLabel.textAlignment = UITextAlignmentCenter;
   titleLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [self.view addSubview:titleLabel];
+  [self.titleLabel sizeToFit];
+  self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y - self.titleLabel.bounds.size.height + positionHeight);
+  [titleView addSubview:titleLabel];
   
-  self.artistLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 2, 195, 12)];
+  self.artistLabel = [[UILabel alloc] init];
   artistLabel.text = [selectedSong artist];
   artistLabel.font = [UIFont boldSystemFontOfSize:12];
   artistLabel.backgroundColor = [UIColor clearColor];
@@ -550,9 +540,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   artistLabel.shadowOffset = CGSizeMake(0, -1);
   artistLabel.textAlignment = UITextAlignmentCenter;
   artistLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [self.view addSubview:artistLabel];
+  [self.artistLabel sizeToFit];
+  self.artistLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
+  [titleView addSubview:artistLabel];
   
-  self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 27, 195, 12)];
+  self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 195, 12)];
   albumLabel.text = [selectedSong album];
   albumLabel.backgroundColor = [UIColor clearColor];
   albumLabel.font = [UIFont boldSystemFontOfSize:12];
@@ -561,16 +553,18 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   albumLabel.shadowOffset = CGSizeMake(0, -1);
   albumLabel.textAlignment = UITextAlignmentCenter;
   albumLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [self.view addSubview:albumLabel];
-  
-  [navigationBar release];
-  navigationBar = nil;
+  [albumLabel sizeToFit];
+  self.albumLabel.center = CGPointMake(titleView.center.x, titleView.center.y + self.albumLabel.bounds.size.height - positionHeight);
+  [titleView addSubview:albumLabel];
+
+  self.navigationItem.titleView = titleView;
+  [titleView release];
   
   duration.adjustsFontSizeToFitWidth = YES;
   currentTime.adjustsFontSizeToFitWidth = YES;
   progressSlider.minimumValue = 0.0;	
   
-  self.containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 44, self.view.bounds.size.width, self.view.bounds.size.height - 44)];
+  self.containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 0)];
   [self.view addSubview:containerView];
   
   self.artworkView = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
@@ -607,24 +601,24 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [v release];
   v = nil;
   
-  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44 + 320, self.view.bounds.size.width, 96)];
+  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0 + 320, self.view.bounds.size.width, 96)];
   buttonBackground.image = [[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerBarBackground" ofType:@"png"]] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
   [self.view addSubview:buttonBackground];
   [buttonBackground release];
   buttonBackground  = nil;
   
-  self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(144, 370, 40, 40)];
+  self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(144, 370 - 44, 40, 40)];
   [playButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPlay" ofType:@"png"]] forState:UIControlStateNormal];
   [playButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
   playButton.showsTouchWhenHighlighted = YES;
   [self.view addSubview:playButton];
   
-  self.pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 370, 40, 40)];
+  self.pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 370 - 44, 40, 40)];
   [pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
   [pauseButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
   pauseButton.showsTouchWhenHighlighted = YES;
   
-  self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(220, 370, 40, 40)];
+  self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(220, 370 - 44, 40, 40)];
   [nextButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNextTrack" ofType:@"png"]] 
               forState:UIControlStateNormal];
   [nextButton addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
@@ -632,7 +626,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   nextButton.enabled = [self canGoToNextTrack];
   [self.view addSubview:nextButton];
   
-  self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(60, 370, 40, 40)];
+  self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(60, 370 - 44, 40, 40)];
   [previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]] 
                   forState:UIControlStateNormal];
   [previousButton addTarget:self action:@selector(previous) forControlEvents:UIControlEventTouchUpInside];
@@ -641,7 +635,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:previousButton];
     
   volumeView.frame = CGRectMake(0, 0, 270, 20);
-  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420);
+  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420 - 44);
   [volumeView sizeToFit];
     
   [self updateViewForStreamerInfo:audioStreamer];
@@ -650,7 +644,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-  [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -664,6 +657,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
+  [self dismissAudioPlayer];
   [audioStreamer release];
   audioStreamer = nil;
 }
