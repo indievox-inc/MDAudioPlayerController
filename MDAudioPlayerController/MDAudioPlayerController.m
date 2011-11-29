@@ -657,7 +657,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
-  [self dismissAudioPlayer];
+  [audioStreamer stop];
   [audioStreamer release];
   audioStreamer = nil;
 }

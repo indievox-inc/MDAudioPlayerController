@@ -154,7 +154,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {    
 
   MDAudioPlayerController *audioPlayer = [[MDAudioPlayerController alloc] initWithSoundFiles:fileArray andSelectedIndex:indexPath.row];
-  [self.navigationController presentModalViewController:audioPlayer animated:YES];
+  [self.navigationController pushViewController:audioPlayer animated:YES];
   [audioPlayer release];
 }
 
