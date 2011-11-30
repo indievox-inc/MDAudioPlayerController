@@ -557,6 +557,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   self.albumLabel.center = CGPointMake(titleView.center.x, titleView.center.y + self.albumLabel.bounds.size.height - positionHeight);
   [titleView addSubview:albumLabel];
 
+  // Handle title, aritist, album label position
+  if (!self.artistLabel.text.length) {
+    self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
+  }
+  
   self.navigationItem.titleView = titleView;
   [titleView release];
   
