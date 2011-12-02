@@ -538,7 +538,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   self.artistLabel = [[UILabel alloc] init];
   artistLabel.text = [selectedSong artist];
-  artistLabel.font = [UIFont boldSystemFontOfSize:12];
+  artistLabel.font = [UIFont boldSystemFontOfSize:10];
   artistLabel.backgroundColor = [UIColor clearColor];
   artistLabel.textColor = [UIColor lightGrayColor];
   artistLabel.shadowColor = [UIColor blackColor];
@@ -552,7 +552,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 195, 12)];
   albumLabel.text = [selectedSong album];
   albumLabel.backgroundColor = [UIColor clearColor];
-  albumLabel.font = [UIFont boldSystemFontOfSize:12];
+  albumLabel.font = [UIFont boldSystemFontOfSize:10];
   albumLabel.textColor = [UIColor lightGrayColor];
   albumLabel.shadowColor = [UIColor blackColor];
   albumLabel.shadowOffset = CGSizeMake(0, -1);
