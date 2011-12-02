@@ -111,6 +111,7 @@
 
 - (void)updateViewForStreamerInfo:(AudioStreamer *)streamer;
 - (void)updateViewForStreamerState:(AudioStreamer *)streamer;
+- (void)updateTitleViewToCenter;
 
 @end
 

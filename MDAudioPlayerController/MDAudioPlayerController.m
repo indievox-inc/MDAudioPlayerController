@@ -143,9 +143,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 }
 
 - (void)updateViewForStreamerState:(AudioStreamer *)streamer {
-  titleLabel.text = [[soundFiles objectAtIndex:selectedIndex] title];
-  artistLabel.text = [[soundFiles objectAtIndex:selectedIndex] artist];
-  albumLabel.text = [[soundFiles objectAtIndex:selectedIndex] album];
   
   [self updateCurrentTimeForStreamer:audioStreamer];
   
@@ -484,6 +481,33 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self updateViewForStreamerState:self.audioStreamer];
 }
 
+- (void)updateTitleViewToCenter {
+  
+  [self.titleLabel sizeToFit];
+  [self.artistLabel sizeToFit];
+  [self.albumLabel sizeToFit];
+  
+  CGFloat positionHeight = 2.f;
+  UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width / 2, self.navigationController.navigationBar.bounds.size.height)];
+  self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y - self.titleLabel.bounds.size.height + positionHeight);
+  [titleView addSubview:titleLabel];
+  
+  self.artistLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
+  [titleView addSubview:artistLabel];
+  
+  self.albumLabel.center = CGPointMake(titleView.center.x, titleView.center.y + self.albumLabel.bounds.size.height - positionHeight);
+  [titleView addSubview:albumLabel];
+  
+  
+  //  // Handle title, aritist, album label position
+  //  if (!self.artistLabel.text.length) {
+  //    self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
+  //  }
+  
+  self.navigationItem.titleView = titleView;
+  [titleView release];
+}
+
 #pragma mark -
 #pragma mark UIViewController
 
@@ -514,9 +538,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   MDAudio *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
   
-  UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width / 2, self.navigationController.navigationBar.bounds.size.height)];
-  
-  CGFloat positionHeight = 2.f;
   self.titleLabel = [[UILabel alloc] init];
   titleLabel.text = [selectedSong title];
   titleLabel.font = [UIFont boldSystemFontOfSize:12];
@@ -526,9 +547,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   titleLabel.shadowOffset = CGSizeMake(0, -1);
   titleLabel.textAlignment = UITextAlignmentCenter;
   titleLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [self.titleLabel sizeToFit];
-  self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y - self.titleLabel.bounds.size.height + positionHeight);
-  [titleView addSubview:titleLabel];
   
   self.artistLabel = [[UILabel alloc] init];
   artistLabel.text = [selectedSong artist];
@@ -539,9 +557,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   artistLabel.shadowOffset = CGSizeMake(0, -1);
   artistLabel.textAlignment = UITextAlignmentCenter;
   artistLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [self.artistLabel sizeToFit];
-  self.artistLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
-  [titleView addSubview:artistLabel];
   
   self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 195, 12)];
   albumLabel.text = [selectedSong album];
@@ -552,17 +567,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   albumLabel.shadowOffset = CGSizeMake(0, -1);
   albumLabel.textAlignment = UITextAlignmentCenter;
   albumLabel.lineBreakMode = UILineBreakModeTailTruncation;
-  [albumLabel sizeToFit];
-  self.albumLabel.center = CGPointMake(titleView.center.x, titleView.center.y + self.albumLabel.bounds.size.height - positionHeight);
-  [titleView addSubview:albumLabel];
-  
-  // Handle title, aritist, album label position
-  if (!self.artistLabel.text.length) {
-    self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
-  }
-  
-  self.navigationItem.titleView = titleView;
-  [titleView release];
   
   duration.adjustsFontSizeToFitWidth = YES;
   currentTime.adjustsFontSizeToFitWidth = YES;
