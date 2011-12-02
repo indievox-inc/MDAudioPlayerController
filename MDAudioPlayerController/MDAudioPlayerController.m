@@ -658,11 +658,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  
-  [audioStreamer start];
-  
-  [self updateViewForStreamerInfo:audioStreamer];
-  [self updateViewForStreamerState:audioStreamer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
