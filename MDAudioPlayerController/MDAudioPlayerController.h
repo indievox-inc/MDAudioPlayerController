@@ -14,44 +14,45 @@
 
 @interface MDAudioPlayerController : UIViewController <AVAudioPlayerDelegate, UITableViewDelegate, UITableViewDataSource>
 {
-	NSMutableArray		*soundFiles;
-	NSUInteger			selectedIndex;
-	
-    AudioStreamer       *audioStreamer;
-	
-	CAGradientLayer		*gradientLayer;
-	
-	UIButton			*playButton;
-	UIButton			*pauseButton;
-	UIButton			*nextButton;
-	UIButton			*previousButton;
-	UIButton			*toggleButton;
-	UIButton			*repeatButton;
-	UIButton			*shuffleButton;
-	UILabel				*currentTime;
-	UILabel				*duration;
-	UILabel				*titleLabel;
-	UILabel				*artistLabel;
-	UILabel				*albumLabel;
-	UILabel				*indexLabel;
-	UISlider			*volumeSlider;
-	UISlider			*progressSlider;
-	
-	UITableView			*songTableView;
-	
-	UIButton			*artworkView;
-	UIImageView			*reflectionView;
-	UIView				*containerView;
-	UIView				*overlayView;
-	
-	NSTimer				*updateTimer;
-	
-	BOOL				interrupted;
-	BOOL				repeatAll;
-	BOOL				repeatOne;
-	BOOL				shuffle;
+  NSMutableArray		*soundFiles;
+  NSUInteger			selectedIndex;
+  
+  AudioStreamer       *audioStreamer;
+  
+  CAGradientLayer		*gradientLayer;
+  
+  UIButton			*playButton;
+  UIButton			*pauseButton;
+  UIButton			*nextButton;
+  UIButton			*previousButton;
+  UIButton			*toggleButton;
+  UIButton			*repeatButton;
+  UIButton			*shuffleButton;
+  UILabel				*currentTime;
+  UILabel				*duration;
+  UILabel				*titleLabel;
+  UILabel				*artistLabel;
+  UILabel				*albumLabel;
+  UILabel				*indexLabel;
+  UISlider			*volumeSlider;
+  UISlider			*progressSlider;
+  
+  UITableView			*songTableView;
+  
+  UIButton			*artworkView;
+  UIImageView			*reflectionView;
+  UIView				*containerView;
+  UIView				*overlayView;
+  
+  NSTimer				*updateTimer;
+  
+  BOOL				interrupted;
+  BOOL				repeatAll;
+  BOOL				repeatOne;
+  BOOL				shuffle;
 }
 
+@property (nonatomic, retain) UIImage *coverImage;
 @property (nonatomic, retain) NSMutableArray *soundFiles;
 @property (nonatomic, copy) NSString *soundFilesPath;
 

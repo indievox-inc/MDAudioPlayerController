@@ -50,9 +50,11 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 @synthesize repeatOne;
 @synthesize shuffle;
 @synthesize volumeView;
+@synthesize coverImage;
 
 - (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs andSelectedIndex:(int)index {
   if (self = [super init])  {
+    coverImage = [[UIImage alloc] init];
     self.soundFiles = songs;
     selectedIndex = index;
     
@@ -122,6 +124,7 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
   [overlayView release], overlayView = nil;
   [updateTimer invalidate], updateTimer = nil;
   [volumeView release], volumeView = nil;
+  [coverImage release], coverImage = nil;
   [super dealloc];
 }
 
@@ -164,7 +167,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   }
   
   if (![songTableView superview])  {
-    [artworkView setImage:[[soundFiles objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
+    if (!artworkView.imageView) {
+      [artworkView setImage:self.coverImage forState:UIControlStateNormal];
+    }
     reflectionView.image = [self reflectedImage:artworkView withHeight:artworkView.bounds.size.height * kDefaultReflectionFraction];
   }
   
@@ -214,7 +219,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
                          forView:self.containerView cache:YES];
   if ([songTableView superview]) {
     [self.songTableView removeFromSuperview];
-    [self.artworkView setImage:[[soundFiles objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
+    [self.artworkView setImage:self.coverImage forState:UIControlStateNormal];
     [self.containerView addSubview:reflectionView];
     
     [gradientLayer removeFromSuperlayer];
@@ -497,13 +502,13 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   updateTimer = nil;
   
-
+  
   self.toggleButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
   [toggleButton setImage:[UIImage imageNamed:@"AudioPlayerAlbumInfo.png"] forState:UIControlStateNormal];
   [toggleButton addTarget:self action:@selector(showSongFiles) forControlEvents:UIControlEventTouchUpInside];
   
   UIBarButtonItem *songsListBarButton = [[UIBarButtonItem alloc] initWithCustomView:toggleButton];
-
+  
   self.navigationItem.rightBarButtonItem = songsListBarButton;
   [songsListBarButton release];
   songsListBarButton = nil;
@@ -514,9 +519,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);	
   
   MDAudio *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
-
+  
   UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width, self.navigationController.navigationBar.bounds.size.height)];
-
+  
   CGFloat positionHeight = 2.f;
   self.titleLabel = [[UILabel alloc] init];
   titleLabel.text = [selectedSong title];
@@ -556,7 +561,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [albumLabel sizeToFit];
   self.albumLabel.center = CGPointMake(titleView.center.x, titleView.center.y + self.albumLabel.bounds.size.height - positionHeight);
   [titleView addSubview:albumLabel];
-
+  
   // Handle title, aritist, album label position
   if (!self.artistLabel.text.length) {
     self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y);
@@ -573,7 +578,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:containerView];
   
   self.artworkView = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 320, 320)];
-  [artworkView setImage:[selectedSong coverImage] forState:UIControlStateNormal];
+  // Set cover image
+  self.coverImage = [[soundFiles objectAtIndex:selectedIndex] coverImage];
+  [artworkView setImage:coverImage forState:UIControlStateNormal];
   [artworkView addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
   artworkView.showsTouchWhenHighlighted = NO;
   artworkView.adjustsImageWhenHighlighted = NO;
@@ -638,11 +645,11 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   previousButton.showsTouchWhenHighlighted = YES;
   previousButton.enabled = [self canGoToPreviousTrack];
   [self.view addSubview:previousButton];
-    
+  
   volumeView.frame = CGRectMake(0, 0, 270, 20);
   volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420 - 44);
   [volumeView sizeToFit];
-    
+  
   [self updateViewForStreamerInfo:audioStreamer];
   [self updateViewForStreamerState:audioStreamer];
 }
