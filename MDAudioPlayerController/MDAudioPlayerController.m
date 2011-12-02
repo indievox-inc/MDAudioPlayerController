@@ -13,8 +13,6 @@
 
 @interface MDAudioPlayerController ()
 - (UIImage *)reflectedImage:(UIButton *)fromImage withHeight:(NSUInteger)height;
-- (void)updateViewForStreamerInfo:(AudioStreamer *)streamer;
-- (void)updateViewForStreamerState:(AudioStreamer *)streamer;
 @end
 
 @implementation MDAudioPlayerController
@@ -69,7 +67,6 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
                                                          NULL,
                                                          kCFStringEncodingUTF8)
      autorelease];
-    
 	NSURL *url = [NSURL URLWithString:escapedValue];
     audioStreamer = [[AudioStreamer alloc] initWithURL:url];
     
@@ -88,9 +85,6 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 #endif
     
     volumeView = [[MPVolumeView alloc] init];
-    
-    [self updateViewForStreamerInfo:audioStreamer];
-    [self updateViewForStreamerState:audioStreamer];
     
     if (error)
       NSLog(@"%@", error);
@@ -520,7 +514,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   MDAudio *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
   
-  UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width, self.navigationController.navigationBar.bounds.size.height)];
+  UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width / 2, self.navigationController.navigationBar.bounds.size.height)];
   
   CGFloat positionHeight = 2.f;
   self.titleLabel = [[UILabel alloc] init];

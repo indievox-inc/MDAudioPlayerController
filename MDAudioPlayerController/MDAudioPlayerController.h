@@ -109,5 +109,8 @@
 - (void)toggleShuffle;
 - (void)toggleRepeat;
 
+- (void)updateViewForStreamerInfo:(AudioStreamer *)streamer;
+- (void)updateViewForStreamerState:(AudioStreamer *)streamer;
+
 @end
 
