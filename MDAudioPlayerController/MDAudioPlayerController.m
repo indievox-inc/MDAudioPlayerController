@@ -487,7 +487,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.artistLabel sizeToFit];
   [self.albumLabel sizeToFit];
   
-  CGFloat positionHeight = 2.f;
+  CGFloat positionHeight = 3.f;
   UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width / 2, self.navigationController.navigationBar.bounds.size.height)];
   self.titleLabel.center = CGPointMake(titleView.center.x, titleView.center.y - self.titleLabel.bounds.size.height + positionHeight);
   [titleView addSubview:titleLabel];
@@ -550,7 +550,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   self.artistLabel = [[UILabel alloc] init];
   artistLabel.text = [selectedSong artist];
-  artistLabel.font = [UIFont boldSystemFontOfSize:10];
+  artistLabel.font = [UIFont boldSystemFontOfSize:12];
   artistLabel.backgroundColor = [UIColor clearColor];
   artistLabel.textColor = [UIColor lightGrayColor];
   artistLabel.shadowColor = [UIColor blackColor];
@@ -561,7 +561,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   self.albumLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 27, 195, 12)];
   albumLabel.text = [selectedSong album];
   albumLabel.backgroundColor = [UIColor clearColor];
-  albumLabel.font = [UIFont boldSystemFontOfSize:10];
+  albumLabel.font = [UIFont boldSystemFontOfSize:12];
   albumLabel.textColor = [UIColor lightGrayColor];
   albumLabel.shadowColor = [UIColor blackColor];
   albumLabel.shadowOffset = CGSizeMake(0, -1);
