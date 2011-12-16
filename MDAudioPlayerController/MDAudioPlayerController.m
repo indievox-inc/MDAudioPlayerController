@@ -645,7 +645,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   volumeView.frame = CGRectMake(0, 0, 270, 20);
   volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420 - 44);
   [volumeView sizeToFit];
-  [volumeView removeFromSuperview];
+  [self.view addSubview:volumeView];
   
   [self updateViewForStreamerInfo:audioStreamer];
   [self updateViewForStreamerState:audioStreamer];
