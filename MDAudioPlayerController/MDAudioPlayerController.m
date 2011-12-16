@@ -296,10 +296,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   if ([overlayView superview]) {
     [overlayView removeFromSuperview];
-    [volumeView removeFromSuperview];
   } else {
     [containerView addSubview:overlayView];
-    [self.view addSubview:volumeView];
   }
   
   [UIView commitAnimations];
@@ -647,6 +645,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   volumeView.frame = CGRectMake(0, 0, 270, 20);
   volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420 - 44);
   [volumeView sizeToFit];
+  [volumeView removeFromSuperview];
   
   [self updateViewForStreamerInfo:audioStreamer];
   [self updateViewForStreamerState:audioStreamer];
