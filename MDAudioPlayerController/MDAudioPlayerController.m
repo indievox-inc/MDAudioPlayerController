@@ -481,10 +481,13 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 }
 
 - (void)updateTitleViewToCenter {
-  
   [self.titleLabel sizeToFit];
   [self.artistLabel sizeToFit];
   [self.albumLabel sizeToFit];
+  
+  self.titleLabel.width = 200.f;
+  self.artistLabel.width = 200.f;
+  self.albumLabel.width = 200.f;
   
   CGFloat positionHeight = 3.f;
   UIView *titleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.bounds.size.width / 2, self.navigationController.navigationBar.bounds.size.height)];
