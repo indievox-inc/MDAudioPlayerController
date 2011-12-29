@@ -211,8 +211,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   if ([songTableView superview]) {
     [self.songTableView removeFromSuperview];
     [self.artworkView setImage:self.coverImage forState:UIControlStateNormal];
+    [self.containerView addSubview:self.artworkView];
     [self.containerView addSubview:reflectionView];
-    
     [gradientLayer removeFromSuperlayer];
   }
   else {
@@ -220,6 +220,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     [self.reflectionView removeFromSuperview];
     [self.overlayView removeFromSuperview];
     [self.containerView addSubview:songTableView];
+    [self.artworkView removeFromSuperview];
     
     [[self.containerView layer] insertSublayer:gradientLayer atIndex:0];
   }
