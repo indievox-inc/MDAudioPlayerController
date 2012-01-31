@@ -661,6 +661,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
+  [self showOverlayView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
