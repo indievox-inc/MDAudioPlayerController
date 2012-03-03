@@ -295,9 +295,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [UIView setAnimationDuration:0.4];
   [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
   
-  if ([overlayView superview]) {
-    [overlayView removeFromSuperview];
-  } else {
+  if (![overlayView superview]) {
     [containerView addSubview:overlayView];
   }
   
