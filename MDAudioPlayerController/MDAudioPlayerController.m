@@ -70,20 +70,6 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 	NSURL *url = [NSURL URLWithString:escapedValue];
     audioStreamer = [[AudioStreamer alloc] initWithURL:url];
     
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(playbackStateChanged:)
-     name:ASStatusChangedNotification
-     object:self.audioStreamer];
-    
-#ifdef SHOUTCAST_METADATA
-	[[NSNotificationCenter defaultCenter]
-	 addObserver:self
-	 selector:@selector(metadataChanged:)
-	 name:ASUpdateMetadataNotification
-	 object:self.audioStreamer];
-#endif
-    
     volumeView = [[MPVolumeView alloc] init];
     
     if (error)
@@ -94,6 +80,7 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 }
 
 - (void)dealloc {
+  [audioStreamer release], audioStreamer = nil;
   [soundFiles release], soundFiles = nil;
   [gradientLayer release], gradientLayer = nil;
   [playButton release], playButton = nil;
@@ -186,6 +173,41 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [audioStreamer stop];
   [self.parentViewController dismissModalViewControllerAnimated:YES];
   [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)setAudioStreamer:(AudioStreamer *)anAudioStreamer {
+  if (audioStreamer != anAudioStreamer) {
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(playbackStateChanged:)
+     name:ASStatusChangedNotification
+     object:audioStreamer];
+    
+#ifdef SHOUTCAST_METADATA
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(metadataChanged:)
+     name:ASUpdateMetadataNotification
+     object:audioStreamer];
+#endif
+    
+    [audioStreamer release];
+    audioStreamer = [anAudioStreamer retain];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(playbackStateChanged:)
+     name:ASStatusChangedNotification
+     object:anAudioStreamer];
+    
+#ifdef SHOUTCAST_METADATA
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(metadataChanged:)
+     name:ASUpdateMetadataNotification
+     object:anAudioStreamer];
+#endif
+  }
 }
 
 - (void)showSongFiles {
@@ -380,23 +402,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   //  player.volume = volumeSlider.value;
   //  [player setNumberOfLoops:0];
   
-  [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(playbackStateChanged:)
-   name:ASStatusChangedNotification
-   object:self.audioStreamer];
-  
-#ifdef SHOUTCAST_METADATA
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(metadataChanged:)
-   name:ASUpdateMetadataNotification
-   object:self.audioStreamer];
-#endif
-  
   [self.audioStreamer start];
   
   [self updateViewForStreamerInfo:self.audioStreamer];
@@ -434,23 +441,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   if (error)
     NSLog(@"%@", error);
   
-  [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(playbackStateChanged:)
-   name:ASStatusChangedNotification
-   object:self.audioStreamer];
-  
-#ifdef SHOUTCAST_METADATA
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(metadataChanged:)
-   name:ASUpdateMetadataNotification
-   object:self.audioStreamer];
-#endif
-  
   [self.audioStreamer start];
   
   [self updateViewForStreamerInfo:self.audioStreamer];
@@ -662,13 +654,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self showOverlayView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-  [super viewWillDisappear:animated];
-  [audioStreamer stop];
-  [audioStreamer release];
-  audioStreamer = nil;
-}
-
 - (void)viewDidUnload {
   self.reflectionView = nil;
 }
@@ -729,7 +714,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   if (error)
     NSLog(@"%@", error);
   
-  [audioStreamer stop];
   self.audioStreamer = streamer;
   [streamer release];
   

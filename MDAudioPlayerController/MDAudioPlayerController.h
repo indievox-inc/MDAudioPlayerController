@@ -54,7 +54,6 @@
 
 @property (nonatomic, retain) UIImage *coverImage;
 @property (nonatomic, retain) NSMutableArray *soundFiles;
-@property (nonatomic, copy) NSString *soundFilesPath;
 
 @property (nonatomic, retain) AudioStreamer *audioStreamer;
 
