@@ -136,11 +136,13 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   if (audioStreamer.isPlaying) {
     [playButton removeFromSuperview];
     [self.view addSubview:pauseButton];
+    [updateTimer invalidate];
     updateTimer = [NSTimer scheduledTimerWithTimeInterval:.01 target:self selector:@selector(updateCurrentTime) userInfo:audioStreamer repeats:YES];
   }
   else {
     [pauseButton removeFromSuperview];
     [self.view addSubview:playButton];
+    [updateTimer invalidate];
     updateTimer = nil;
   }
   
@@ -510,6 +512,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
   
+  [updateTimer invalidate];
   updateTimer = nil;
   
   
