@@ -321,6 +321,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   if (![overlayView superview]) {
     [containerView addSubview:overlayView];
+  } else {
+    [overlayView removeFromSuperview];
   }
   
   [UIView commitAnimations];
