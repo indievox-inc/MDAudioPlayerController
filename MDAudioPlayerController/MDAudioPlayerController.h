@@ -56,6 +56,7 @@
 @property (nonatomic, retain) NSMutableArray *soundFiles;
 
 @property (nonatomic, retain) AudioStreamer *audioStreamer;
+@property (nonatomic, assign) BOOL currentUserIsPlaying;
 
 @property (nonatomic, retain) CAGradientLayer *gradientLayer;
 
@@ -99,6 +100,8 @@
 - (BOOL)canGoToNextTrack;
 - (BOOL)canGoToPreviousTrack;
 
+- (void)stop;
+- (void)pause;
 - (void)play;
 - (void)previous;
 - (void)next;

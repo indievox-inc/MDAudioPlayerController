@@ -49,6 +49,7 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 @synthesize shuffle;
 @synthesize volumeView;
 @synthesize coverImage;
+@synthesize currentUserIsPlaying;
 
 - (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs andSelectedIndex:(int)index {
   if (self = [super init])  {
@@ -111,10 +112,23 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 
 void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   MDAudioPlayerController *vc = (MDAudioPlayerController *)userData;
-  if (interruptionState == kAudioSessionBeginInterruption)
+  
+  if (interruptionState == kAudioSessionBeginInterruption) {
+    NSLog(@"interruptionState == kAudioSessionBeginInterruption");
+    vc.currentUserIsPlaying = vc.audioStreamer.isPlaying;
+    NSLog(@"currentUserIsPlaying %@", vc.currentUserIsPlaying ? @"Yes" : @"No");
     vc.interrupted = YES;
-  else if (interruptionState == kAudioSessionEndInterruption)
+  }
+  else if (interruptionState == kAudioSessionEndInterruption) {
+    NSLog(@"interruptionState == kAudioSessionEndInterruption");
+    NSLog(@"currentUserIsPlaying %@", vc.currentUserIsPlaying ? @"Yes" : @"No");
+    if (vc.currentUserIsPlaying) {
+      NSLog(@"Play");
+      [vc pause];
+      [vc play];
+    }
     vc.interrupted = NO;
+  }
 }
 
 - (void)updateCurrentTimeForStreamer:(AudioStreamer *)streamer {
@@ -380,14 +394,21 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     return YES;
 }
 
--(void)play {
+- (void)stop {
+  [self.audioStreamer stop];
+  [self updateViewForStreamerInfo:self.audioStreamer];
+  [self updateViewForStreamerState:self.audioStreamer];
+}
+
+- (void)pause {
+  [self.audioStreamer pause];
+  [self updateViewForStreamerInfo:self.audioStreamer];
+  [self updateViewForStreamerState:self.audioStreamer];
+}
+
+- (void)play {
   
-  if (self.audioStreamer.isPlaying)  {
-    [self.audioStreamer pause];
-  }
-  else {
-    [self.audioStreamer start];
-  }
+  [self.audioStreamer start];
   
   [self updateViewForStreamerInfo:self.audioStreamer];
   [self updateViewForStreamerState:self.audioStreamer];
@@ -622,7 +643,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   
   self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, 370 - 44, 40, 40)] autorelease];
   [pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
-  [pauseButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
+  [pauseButton addTarget:self action:@selector(pause) forControlEvents:UIControlEventTouchUpInside];
   pauseButton.showsTouchWhenHighlighted = YES;
   
   self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, 370 - 44, 40, 40)] autorelease];
