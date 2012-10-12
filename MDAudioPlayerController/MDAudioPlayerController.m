@@ -608,7 +608,12 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   reflectionView.alpha = kDefaultReflectionFraction;
   [self.containerView addSubview:reflectionView];
   
-  self.songTableView = [[[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 368)] autorelease];
+  if (IVISRetina4()) {
+    self.songTableView = [[[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 456)] autorelease];
+  } else {
+    self.songTableView = [[[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 368)] autorelease];
+  }
+  
   self.songTableView.delegate = self;
   self.songTableView.dataSource = self;
   self.songTableView.separatorColor = [UIColor colorWithRed:0.986 green:0.933 blue:0.994 alpha:0.10];
@@ -629,24 +634,27 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [v release];
   v = nil;
   
-  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0 + 320, self.view.bounds.size.width, 96)];
+  CGFloat adjustY = 45;
+  CGFloat adjustButtonY = 85;
+  
+  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - 96 - adjustY, self.view.bounds.size.width, 96)];
   buttonBackground.image = [[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerBarBackground" ofType:@"png"]] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
   [self.view addSubview:buttonBackground];
   [buttonBackground release];
   buttonBackground  = nil;
   
-  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(144, 370 - 44, 40, 40)] autorelease];
+  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(144, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
   [playButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPlay" ofType:@"png"]] forState:UIControlStateNormal];
   [playButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
   playButton.showsTouchWhenHighlighted = YES;
   [self.view addSubview:playButton];
   
-  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, 370 - 44, 40, 40)] autorelease];
+  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
   [pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
   [pauseButton addTarget:self action:@selector(pause) forControlEvents:UIControlEventTouchUpInside];
   pauseButton.showsTouchWhenHighlighted = YES;
   
-  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, 370 - 44, 40, 40)] autorelease];
+  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
   [nextButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNextTrack" ofType:@"png"]] 
               forState:UIControlStateNormal];
   [nextButton addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
@@ -654,7 +662,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   nextButton.enabled = [self canGoToNextTrack];
   [self.view addSubview:nextButton];
   
-  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(60, 370 - 44, 40, 40)] autorelease];
+  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(60, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
   [previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]] 
                   forState:UIControlStateNormal];
   [previousButton addTarget:self action:@selector(previous) forControlEvents:UIControlEventTouchUpInside];
@@ -663,7 +671,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:previousButton];
   
   volumeView.frame = CGRectMake(0, 0, 270, 20);
-  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, 420 - 44);
+  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, self.view.frame.size.height - 35 - 44);
   [volumeView sizeToFit];
   [self.view addSubview:volumeView];
   
