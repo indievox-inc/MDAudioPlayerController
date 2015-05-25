@@ -634,27 +634,28 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [v release];
   v = nil;
   
-  CGFloat adjustY = 45;
-  CGFloat adjustButtonY = 85;
+  CGFloat adjustY = 160;
+  CGFloat adjustButtonY = 150;
+  CGFloat adjustVolmeViewY = 90;
   
-  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - 96 - adjustY, self.view.bounds.size.width, 96)];
+  UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - adjustY, self.view.bounds.size.width, 96)];
   buttonBackground.image = [[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerBarBackground" ofType:@"png"]] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
   [self.view addSubview:buttonBackground];
   [buttonBackground release];
   buttonBackground  = nil;
   
-  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(144, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
+  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(144, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [playButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPlay" ofType:@"png"]] forState:UIControlStateNormal];
   [playButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
   playButton.showsTouchWhenHighlighted = YES;
   [self.view addSubview:playButton];
   
-  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
+  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
   [pauseButton addTarget:self action:@selector(pause) forControlEvents:UIControlEventTouchUpInside];
   pauseButton.showsTouchWhenHighlighted = YES;
   
-  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
+  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [nextButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNextTrack" ofType:@"png"]] 
               forState:UIControlStateNormal];
   [nextButton addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
@@ -662,8 +663,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   nextButton.enabled = [self canGoToNextTrack];
   [self.view addSubview:nextButton];
   
-  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(60, self.view.frame.size.height - adjustButtonY - 44, 40, 40)] autorelease];
-  [previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]] 
+  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(60, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
+  [previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]]
                   forState:UIControlStateNormal];
   [previousButton addTarget:self action:@selector(previous) forControlEvents:UIControlEventTouchUpInside];
   previousButton.showsTouchWhenHighlighted = YES;
@@ -671,7 +672,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:previousButton];
   
   volumeView.frame = CGRectMake(0, 0, 270, 20);
-  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, self.view.frame.size.height - 35 - 44);
+  volumeView.center = CGPointMake(self.view.bounds.size.width / 2, self.view.frame.size.height - adjustVolmeViewY);
+
   [volumeView sizeToFit];
   [self.view addSubview:volumeView];
   
@@ -719,6 +721,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   cell.duration = [[soundFiles objectAtIndex:indexPath.row] durationInMinutes];
   
   cell.isEven = indexPath.row % 2;
+  cell.backgroundColor = [UIColor blackColor];
   
   if (selectedIndex == indexPath.row)
     cell.isSelectedIndex = YES;

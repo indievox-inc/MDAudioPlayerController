@@ -16,7 +16,12 @@
 
 - (void)drawRect:(CGRect)r
 {
-	[(MDAudioPlayerTableViewCell *)[self superview] drawContentView:r];
+    if ([[[UIDevice currentDevice] systemVersion] hasPrefix:@"7"]) {
+        [(MDAudioPlayerTableViewCell *)[[self superview] superview] drawContentView:r];
+    } else {
+        [(MDAudioPlayerTableViewCell *)[self superview] drawContentView:r];
+    }
+
 }
 
 @end
