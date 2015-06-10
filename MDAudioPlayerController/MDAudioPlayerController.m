@@ -199,14 +199,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
      name:ASStatusChangedNotification
      object:audioStreamer];
     
-#ifdef SHOUTCAST_METADATA
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(metadataChanged:)
-     name:ASUpdateMetadataNotification
-     object:audioStreamer];
-#endif
-    
     [audioStreamer release];
     audioStreamer = [anAudioStreamer retain];
     
@@ -215,14 +207,6 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
      selector:@selector(playbackStateChanged:)
      name:ASStatusChangedNotification
      object:anAudioStreamer];
-    
-#ifdef SHOUTCAST_METADATA
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(metadataChanged:)
-     name:ASUpdateMetadataNotification
-     object:anAudioStreamer];
-#endif
   }
 }
 
