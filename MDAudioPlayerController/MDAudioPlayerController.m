@@ -256,7 +256,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     overlayView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.6];
     overlayView.opaque = NO;
     
-    self.progressSlider = [[[UISlider alloc] initWithFrame:CGRectMake(54, 20, 212, 23)] autorelease];
+    CGFloat screenWidth = self.view.bounds.size.width;
+    self.progressSlider = [[[UISlider alloc] initWithFrame:CGRectMake(54, 20, screenWidth - 108, 23)] autorelease];
     [progressSlider setThumbImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerScrubberKnob" ofType:@"png"]]
                          forState:UIControlStateNormal];
     [progressSlider setMinimumTrackImage:[[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerScrubberLeft" ofType:@"png"]] stretchableImageWithLeftCapWidth:5 topCapHeight:3]
@@ -268,16 +269,16 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     progressSlider.minimumValue = 0.0;	
     [overlayView addSubview:progressSlider];
     
-    self.indexLabel = [[[UILabel alloc] initWithFrame:CGRectMake(128, 2, 64, 21)] autorelease];
+    self.indexLabel = [[[UILabel alloc] initWithFrame:CGRectMake(128, 2, screenWidth - 256, 21)] autorelease];
     indexLabel.font = [UIFont boldSystemFontOfSize:12];
     indexLabel.shadowOffset = CGSizeMake(0, -1);
     indexLabel.shadowColor = [UIColor blackColor];
     indexLabel.backgroundColor = [UIColor clearColor];
     indexLabel.textColor = [UIColor whiteColor];
-    indexLabel.textAlignment = UITextAlignmentCenter;
+    indexLabel.textAlignment = NSTextAlignmentCenter;
     [overlayView addSubview:indexLabel];
     
-    self.duration = [[[UILabel alloc] initWithFrame:CGRectMake(272, 21, 48, 21)] autorelease];
+    self.duration = [[[UILabel alloc] initWithFrame:CGRectMake(screenWidth - 48, 21, 48, 21)] autorelease];
     duration.font = [UIFont boldSystemFontOfSize:14];
     duration.shadowOffset = CGSizeMake(0, -1);
     duration.shadowColor = [UIColor blackColor];
@@ -291,7 +292,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     currentTime.shadowColor = [UIColor blackColor];
     currentTime.backgroundColor = [UIColor clearColor];
     currentTime.textColor = [UIColor whiteColor];
-    currentTime.textAlignment = UITextAlignmentRight;
+    currentTime.textAlignment = NSTextAlignmentRight;
     [overlayView addSubview:currentTime];
     
     duration.adjustsFontSizeToFitWidth = YES;
@@ -303,7 +304,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
     [repeatButton addTarget:self action:@selector(toggleRepeat) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:repeatButton];
     
-    self.shuffleButton = [[[UIButton alloc] initWithFrame:CGRectMake(280, 45, 32, 28)] autorelease];
+    self.shuffleButton = [[[UIButton alloc] initWithFrame:CGRectMake(screenWidth - 40, 45, 32, 28)] autorelease];
     [shuffleButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerShuffleOff" ofType:@"png"]] 
                    forState:UIControlStateNormal];
     [shuffleButton addTarget:self action:@selector(toggleShuffle) forControlEvents:UIControlEventTouchUpInside];
@@ -577,7 +578,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   self.containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - 0)] autorelease];
   [self.view addSubview:containerView];
   
-  self.artworkView = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, 320, 320)] autorelease];
+  CGFloat screenWidth = self.view.bounds.size.width;
+  self.artworkView = [[[UIButton alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenWidth)] autorelease];
   // Set cover image
   self.coverImage = [[soundFiles objectAtIndex:selectedIndex] coverImage];
   [artworkView setImage:coverImage forState:UIControlStateNormal];
@@ -587,7 +589,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   artworkView.backgroundColor = [UIColor clearColor];
   [containerView addSubview:artworkView];
   
-  self.reflectionView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 320, 320, 96)] autorelease];
+  self.reflectionView = [[[UIImageView alloc] initWithFrame:CGRectMake(0, screenWidth, screenWidth, 96)] autorelease];
   reflectionView.image = [self reflectedImage:artworkView withHeight:artworkView.bounds.size.height * kDefaultReflectionFraction];
   reflectionView.alpha = kDefaultReflectionFraction;
   [self.containerView addSubview:reflectionView];
@@ -627,19 +629,20 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   [self.view addSubview:buttonBackground];
   [buttonBackground release];
   buttonBackground  = nil;
-  
-  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(144, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
+
+  CGFloat spacer = (screenWidth - 40 * 3) / 4;
+  self.playButton = [[[UIButton alloc] initWithFrame:CGRectMake(spacer * 2 + 40, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [playButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPlay" ofType:@"png"]] forState:UIControlStateNormal];
   [playButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
   playButton.showsTouchWhenHighlighted = YES;
   [self.view addSubview:playButton];
   
-  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(140, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
+  self.pauseButton = [[[UIButton alloc] initWithFrame:CGRectMake(spacer * 2 + 40, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
   [pauseButton addTarget:self action:@selector(pause) forControlEvents:UIControlEventTouchUpInside];
   pauseButton.showsTouchWhenHighlighted = YES;
   
-  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(220, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
+  self.nextButton = [[[UIButton alloc] initWithFrame:CGRectMake(spacer * 3 + 40 * 2, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [nextButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNextTrack" ofType:@"png"]] 
               forState:UIControlStateNormal];
   [nextButton addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
@@ -647,7 +650,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   nextButton.enabled = [self canGoToNextTrack];
   [self.view addSubview:nextButton];
   
-  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(60, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
+  self.previousButton = [[[UIButton alloc] initWithFrame:CGRectMake(spacer, self.view.frame.size.height - adjustButtonY, 40, 40)] autorelease];
   [previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]]
                   forState:UIControlStateNormal];
   [previousButton addTarget:self action:@selector(previous) forControlEvents:UIControlEventTouchUpInside];
@@ -655,7 +658,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState) {
   previousButton.enabled = [self canGoToPreviousTrack];
   [self.view addSubview:previousButton];
   
-  volumeView.frame = CGRectMake(0, 0, 270, 20);
+  volumeView.frame = CGRectMake(0, 0, screenWidth * 0.84, 20);
   volumeView.center = CGPointMake(self.view.bounds.size.width / 2, self.view.frame.size.height - adjustVolmeViewY);
 
   [volumeView sizeToFit];
